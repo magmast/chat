@@ -1,16 +1,17 @@
-import { config } from 'dotenv';
-import { defineConfig } from 'drizzle-kit';
+import { config } from "dotenv";
+import { defineConfig } from "drizzle-kit";
+
+import { env } from "./src/lib/env";
 
 config({
-  path: '.env.local',
+  path: ".env.local",
 });
 
 export default defineConfig({
-  schema: './lib/db/schema.ts',
-  out: './lib/db/migrations',
-  dialect: 'postgresql',
+  schema: "./src/lib/db/schema.ts",
+  out: "./src/lib/db/migrations",
+  dialect: "postgresql",
   dbCredentials: {
-    // biome-ignore lint: Forbidden non-null assertion.
-    url: process.env.POSTGRES_URL!,
+    url: env.POSTGRES_URL,
   },
 });
