@@ -8,19 +8,37 @@ export const models: Array<Model> = [
   {
     id: "deepseek/deepseek-chat",
     label: "DeepSeek V3",
-    description:
-      "General-purpose model from DeepSeek. Perfect for a wide range of tasks.",
+    description: "",
   },
   {
     id: "deepseek/deepseek-r1",
     label: "DeepSeek R1",
-    description:
-      "Reasoning model from DeepSeek. Perfect for complex tasks that require reasoning and logic.",
+    description: "",
   },
   {
     id: "google/gemini-flash-1.5",
     label: "Gemini Flash 1.5",
-    description: "Small, but cheap model from Google. Good for quick tasks.",
+    description: "",
+  },
+  {
+    id: "mistralai/mistral-nemo",
+    label: "Mistral Nemo",
+    description: "",
+  },
+  {
+    id: "openai/gpt-4o",
+    label: "ChatGPT 4o",
+    description: "",
+  },
+  {
+    id: "openai/gpt-4o-mini",
+    label: "ChatGPT 4o Mini",
+    description: "",
+  },
+  {
+    id: "meta-llama/llama-3.2-1b-instruct",
+    label: "Llama 3.2 1B",
+    description: "",
   },
 ] as const;
 

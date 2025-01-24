@@ -7,6 +7,7 @@ import {
   tool,
 } from "ai";
 import { Session } from "next-auth";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 
 import { saveDocument } from "@/lib/db/queries";
@@ -23,7 +24,7 @@ interface CreateDocumentProps {
 }
 
 export const createDocument = ({
-  model,
+  model: selectedModel,
   session,
   dataStream,
 }: CreateDocumentProps) =>
@@ -58,9 +59,12 @@ export const createDocument = ({
         content: "",
       });
 
+      const model = await customModel(selectedModel.id);
+      invariant(model, "Missing API key");
+
       if (kind === "text") {
         const { fullStream } = streamText({
-          model: customModel(model.id),
+          model,
           system:
             "Write about the given topic. Markdown is supported. Use headings wherever appropriate.",
           experimental_transform: smoothStream({ chunking: "word" }),
@@ -84,7 +88,7 @@ export const createDocument = ({
         dataStream.writeData({ type: "finish", content: "" });
       } else if (kind === "code") {
         const { fullStream } = streamObject({
-          model: customModel(model.id),
+          model,
           system: codePrompt,
           prompt: title,
           schema: z.object({

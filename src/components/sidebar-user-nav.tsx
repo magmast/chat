@@ -5,6 +5,7 @@ import type { User } from "next-auth";
 import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import { useState } from "react";
 
 import {
   DropdownMenu,
@@ -19,40 +20,56 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
+import { Settings } from "./settings";
+
 export function SidebarUserNav({ user }: { user: User }) {
   const { setTheme, theme } = useTheme();
+  const [isSettingsOpen, setSettingsOpen] = useState(false);
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton className="h-10 bg-background data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
-              <Image
-                src={`https://avatar.vercel.sh/${user.email}`}
-                alt={user.email ?? "User Avatar"}
-                width={24}
-                height={24}
-                className="rounded-full"
-              />
-              <span className="truncate">{user?.email}</span>
-              <ChevronUp className="ml-auto" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            side="top"
-            className="w-[--radix-popper-anchor-width]"
-          >
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onSelect={() => setTheme(theme === "dark" ? "light" : "dark")}
+    <>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton className="h-10 bg-background data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+                <Image
+                  src={`https://avatar.vercel.sh/${user.email}`}
+                  alt={user.email ?? "User Avatar"}
+                  width={24}
+                  height={24}
+                  className="rounded-full"
+                />
+                <span className="truncate">{user?.email}</span>
+                <ChevronUp className="ml-auto" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent
+              side="top"
+              className="w-[--radix-popper-anchor-width]"
             >
-              {`Toggle ${theme === "light" ? "dark" : "light"} mode`}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <button
-                type="button"
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onSelect={() => setTheme(theme === "dark" ? "light" : "dark")}
+              >
+                {`Toggle ${theme === "light" ? "dark" : "light"} mode`}
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem
+                asChild
+                className="w-full cursor-pointer"
+                onClick={() => setSettingsOpen(true)}
+              >
+                <button type="button">Settings</button>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem
+                asChild
                 className="w-full cursor-pointer"
                 onClick={() => {
                   signOut({
@@ -60,12 +77,14 @@ export function SidebarUserNav({ user }: { user: User }) {
                   });
                 }}
               >
-                Sign out
-              </button>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+                <button type="button">Sign out</button>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+
+      <Settings isOpen={isSettingsOpen} onOpenChange={setSettingsOpen} />
+    </>
   );
 }

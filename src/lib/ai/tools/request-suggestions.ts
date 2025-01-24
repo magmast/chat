@@ -1,5 +1,6 @@
 import { DataStreamWriter, streamObject, tool } from "ai";
 import { Session } from "next-auth";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 
 import { getDocumentById, saveSuggestions } from "@/lib/db/queries";
@@ -16,7 +17,7 @@ interface RequestSuggestionsProps {
 }
 
 export const requestSuggestions = ({
-  model,
+  model: selectedModel,
   session,
   dataStream,
 }: RequestSuggestionsProps) =>
@@ -40,8 +41,11 @@ export const requestSuggestions = ({
         Omit<Suggestion, "userId" | "createdAt" | "documentCreatedAt">
       > = [];
 
+      const model = await customModel(selectedModel.id);
+      invariant(model, "Missing API key");
+
       const { elementStream } = streamObject({
-        model: customModel(model.id),
+        model,
         system:
           "You are a help writing assistant. Given a piece of writing, please offer suggestions to improve the piece of writing and describe the change. It is very important for the edits to contain full sentences instead of just words. Max 5 suggestions.",
         prompt: document.content,

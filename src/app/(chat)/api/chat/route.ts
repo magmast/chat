@@ -5,6 +5,7 @@ import {
   smoothStream,
   streamText,
 } from "ai";
+import { SuperJSON } from "superjson";
 
 import { auth } from "@/app/(auth)/auth";
 import { customModel } from "@/lib/ai";
@@ -14,6 +15,7 @@ import { createDocument } from "@/lib/ai/tools/create-document";
 import { getWeather } from "@/lib/ai/tools/get-weather";
 import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
 import { updateDocument } from "@/lib/ai/tools/update-document";
+import { createMissingApiKeyResponse } from "@/lib/chat";
 import {
   deleteChatById,
   getChatById,
@@ -54,33 +56,33 @@ export async function POST(request: Request) {
     await request.json();
 
   const session = await auth();
-
   if (!session || !session.user || !session.user.id) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const model = models.find((model) => model.id === modelId);
-
-  if (!model) {
+  const selectedModel = models.find((model) => model.id === modelId);
+  if (!selectedModel) {
     return new Response("Model not found", { status: 404 });
+  }
+
+  const model = await customModel(selectedModel.id);
+  if (!model) {
+    return createMissingApiKeyResponse();
   }
 
   const coreMessages = convertToCoreMessages(messages);
   const userMessage = getMostRecentUserMessage(coreMessages);
-
   if (!userMessage) {
     return new Response("No user message found", { status: 400 });
   }
 
   const chat = await getChatById({ id });
-
   if (!chat) {
     const title = await generateTitleFromUserMessage({ message: userMessage });
     await saveChat({ id, userId: session.user.id, title });
   }
 
   const userMessageId = generateUUID();
-
   await saveMessages({
     messages: [
       { ...userMessage, id: userMessageId, createdAt: new Date(), chatId: id },
@@ -88,14 +90,14 @@ export async function POST(request: Request) {
   });
 
   return createDataStreamResponse({
-    execute: (dataStream) => {
+    execute: async (dataStream) => {
       dataStream.writeData({
         type: "user-message-id",
         content: userMessageId,
       });
 
       const result = streamText({
-        model: customModel(model.id),
+        model,
         system: systemPrompt,
         messages: coreMessages,
         maxSteps: 5,
@@ -103,12 +105,20 @@ export async function POST(request: Request) {
         experimental_transform: smoothStream({ chunking: "word" }),
         tools: {
           getWeather,
-          createDocument: createDocument({ session, dataStream, model }),
-          updateDocument: updateDocument({ session, dataStream, model }),
+          createDocument: createDocument({
+            session,
+            dataStream,
+            model: selectedModel,
+          }),
+          updateDocument: updateDocument({
+            session,
+            dataStream,
+            model: selectedModel,
+          }),
           requestSuggestions: requestSuggestions({
             session,
             dataStream,
-            model,
+            model: selectedModel,
           }),
         },
         onFinish: async ({ response }) => {

@@ -2,6 +2,7 @@
 
 import { type CoreUserMessage, generateText } from "ai";
 import { cookies } from "next/headers";
+import invariant from "tiny-invariant";
 
 import { VisibilityType } from "@/components/visibility-selector";
 import { customModel } from "@/lib/ai";
@@ -21,8 +22,11 @@ export async function generateTitleFromUserMessage({
 }: {
   message: CoreUserMessage;
 }) {
+  const model = await customModel("google/gemini-flash-1.5");
+  invariant(model, "Missing API key");
+
   const { text: title } = await generateText({
-    model: customModel("google/gemini-flash-1.5"),
+    model,
     system: `\n
     - you will generate a short title based on the first message a user begins a conversation with
     - ensure it is not more than 80 characters long

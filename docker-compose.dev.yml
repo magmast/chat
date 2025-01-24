@@ -1,19 +1,14 @@
 services:
   app:
-    # image: ghcr.io/magmast/chat
-    image: chat
+    build:
+      context: .
+      target: build
+    command: bun dev
     ports:
       - 3000:3000
+    volumes:
+      - .:/usr/src/app:Z
     restart: unless-stopped
-    env_file:
-      - .env.local
-    depends_on:
-      - db
-
-  migrate:
-    image: chat-migrate
-    profiles:
-      - migrate
     env_file:
       - .env.local
     depends_on:
@@ -26,6 +21,8 @@ services:
       - .env.local
     volumes:
       - db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
 
 volumes:
   db-data:

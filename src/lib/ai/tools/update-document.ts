@@ -7,6 +7,7 @@ import {
   tool,
 } from "ai";
 import { Session } from "next-auth";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 
 import { getDocumentById, saveDocument } from "@/lib/db/queries";
@@ -22,7 +23,7 @@ interface UpdateDocumentProps {
 }
 
 export const updateDocument = ({
-  model,
+  model: selectedModel,
   session,
   dataStream,
 }: UpdateDocumentProps) =>
@@ -51,9 +52,12 @@ export const updateDocument = ({
         content: document.title,
       });
 
+      const model = await customModel(selectedModel.id);
+      invariant(model, "Missing API key");
+
       if (document.kind === "text") {
         const { fullStream } = streamText({
-          model: customModel(model.id),
+          model,
           system: updateDocumentPrompt(currentContent, "text"),
           experimental_transform: smoothStream({ chunking: "word" }),
           prompt: description,
@@ -84,7 +88,7 @@ export const updateDocument = ({
         dataStream.writeData({ type: "finish", content: "" });
       } else if (document.kind === "code") {
         const { fullStream } = streamObject({
-          model: customModel(model.id),
+          model,
           system: updateDocumentPrompt(currentContent, "code"),
           prompt: description,
           schema: z.object({

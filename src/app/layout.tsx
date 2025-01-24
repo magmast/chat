@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 
 import "./globals.css";
 
+import { TRPCReactProvider } from "@/lib/trpc/react";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://chat.vercel.ai"),
   title: "Next.js Chatbot Template",
@@ -57,15 +59,17 @@ export default async function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Toaster position="top-center" />
-          {children}
-        </ThemeProvider>
+        <TRPCReactProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Toaster position="top-center" />
+            {children}
+          </ThemeProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   );
