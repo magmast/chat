@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Toaster } from "sonner";
 
 import { ThemeProvider } from "@/components/theme-provider";
@@ -8,13 +8,12 @@ import "./globals.css";
 import { TRPCReactProvider } from "@/lib/trpc/react";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://chat.vercel.ai"),
-  title: "Next.js Chatbot Template",
-  description: "Next.js chatbot template using the AI SDK.",
+  title: "Chat",
 };
 
-export const viewport = {
-  maximumScale: 1, // Disable auto-zoom on mobile Safari
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 const LIGHT_THEME_COLOR = "hsl(0 0% 100%)";

@@ -103,24 +103,26 @@ export async function POST(request: Request) {
         maxSteps: 5,
         experimental_activeTools: allTools,
         experimental_transform: smoothStream({ chunking: "word" }),
-        tools: {
-          getWeather,
-          createDocument: createDocument({
-            session,
-            dataStream,
-            model: selectedModel,
-          }),
-          updateDocument: updateDocument({
-            session,
-            dataStream,
-            model: selectedModel,
-          }),
-          requestSuggestions: requestSuggestions({
-            session,
-            dataStream,
-            model: selectedModel,
-          }),
-        },
+        tools: selectedModel.features.includes("tools")
+          ? {
+              getWeather,
+              createDocument: createDocument({
+                session,
+                dataStream,
+                model: selectedModel,
+              }),
+              updateDocument: updateDocument({
+                session,
+                dataStream,
+                model: selectedModel,
+              }),
+              requestSuggestions: requestSuggestions({
+                session,
+                dataStream,
+                model: selectedModel,
+              }),
+            }
+          : undefined,
         onFinish: async ({ response }) => {
           if (session.user?.id) {
             try {

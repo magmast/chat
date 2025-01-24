@@ -22,7 +22,7 @@ export async function generateTitleFromUserMessage({
 }: {
   message: CoreUserMessage;
 }) {
-  const model = await customModel("google/gemini-flash-1.5");
+  const model = await customModel("meta-llama/llama-3.2-3b-instruct");
   invariant(model, "Missing API key");
 
   const { text: title } = await generateText({
