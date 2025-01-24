@@ -14,8 +14,6 @@ const baseEnv = createEnv({
       .enum(["development", "production", "test"])
       .default("production"),
 
-    OPENROUTER_API_KEY: z.string(),
-
     PORT: z.string().default("3000"),
 
     POSTGRES_USER: z.string(),

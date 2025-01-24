@@ -5,8 +5,8 @@
 Build the docker image:
 
 ```sh
-docker build -t chat .
-docker build --target migrate -t chat-migrate .
+docker build -t ghcr.io/magmast/chat .
+docker build --target migrate -t ghcr.io/magmast/chat-migrate .
 ```
 
 Copy the `.env.example` file and update it's contents:

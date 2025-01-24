@@ -10,9 +10,14 @@ COPY . .
 ENV SKIP_VALIDATION=true
 RUN bun run build
 
-FROM deps AS migrate
+FROM deps AS build-migrate
 COPY . .
-CMD ["bun", "db:migrate"]
+RUN bun build --target=bun --outfile=migrate.js src/lib/db/migrate.ts
+
+FROM base AS migrate
+COPY --from=build-migrate /usr/src/app/migrate.js ./migrate.js
+COPY --from=build-migrate /usr/src/app/src/lib/db/migrations ./src/lib/db/migrations
+CMD ["bun", "migrate.js"]
 
 FROM base AS prod
 

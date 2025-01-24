@@ -1,7 +1,6 @@
 services:
   app:
-    # image: ghcr.io/magmast/chat
-    image: chat
+    image: ghcr.io/magmast/chat
     ports:
       - 3000:3000
     restart: unless-stopped
@@ -11,7 +10,7 @@ services:
       - db
 
   migrate:
-    image: chat-migrate
+    image: ghcr.io/magmast/chat-migrate
     profiles:
       - migrate
     env_file:
