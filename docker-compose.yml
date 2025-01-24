@@ -1,18 +1,9 @@
 services:
   app:
-    image: ghcr.io/magmast/chat
+    image: ghcr.io/magmast/chatbot
     ports:
       - 3000:3000
     restart: unless-stopped
-    env_file:
-      - .env.local
-    depends_on:
-      - db
-
-  migrate:
-    image: ghcr.io/magmast/chat-migrate
-    profiles:
-      - migrate
     env_file:
       - .env.local
     depends_on:

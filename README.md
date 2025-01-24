@@ -5,8 +5,7 @@
 Build the docker image:
 
 ```sh
-docker build -t ghcr.io/magmast/chat .
-docker build --target migrate -t ghcr.io/magmast/chat-migrate .
+docker build -t ghcr.io/magmast/chatbot .
 ```
 
 Copy the `.env.example` file and update it's contents:
@@ -16,14 +15,16 @@ cp .env.example .env.local
 vim .env.local
 ```
 
-Migrate the database:
-
-```sh
-docker compose run migrate
-```
-
 Start services:
 
 ```sh
 docker compose up -d
 ```
+
+Migrate database:
+
+```sh
+docker exec -it chatbot-app-1 bun run migrate.js
+```
+
+Start chatting!

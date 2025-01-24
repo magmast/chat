@@ -18,19 +18,8 @@ async function runMigrate() {
   process.exit(0);
 }
 
-let isRetry = false;
-
-function handleError(err: unknown) {
-  if (!isRetry) {
-    isRetry = true;
-    // When running `docker compose run migrate` there may be a need to wait for the db to be ready
-    setTimeout(() => runMigrate().catch(handleError), 10_000);
-    return;
-  }
-
+runMigrate().catch((err) => {
   console.error("❌ Migration failed");
   console.error(err);
   process.exit(1);
-}
-
-runMigrate().catch(handleError);
+});

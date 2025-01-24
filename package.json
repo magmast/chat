@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
+    "build:migrate": "bun build --target=bun --outfile=migrate.js src/lib/db/migrate.ts",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
