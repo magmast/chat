@@ -7,7 +7,7 @@ import postgres from "postgres";
 
 import { BlockKind } from "@/components/block";
 
-import { env } from "../env";
+import { POSTGRES_URL } from "../env";
 import {
   users,
   chats,
@@ -21,7 +21,7 @@ import {
   settings as settingsTable,
 } from "./schema";
 
-const client = postgres(env.POSTGRES_URL);
+const client = postgres(POSTGRES_URL);
 const db = drizzle(client);
 
 export async function getUser(email: string): Promise<Array<User>> {

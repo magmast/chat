@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { AuthForm } from "@/components/auth-form";
 import { SubmitButton } from "@/components/submit-button";
+import { env } from "@/lib/env";
 
 import { login, type LoginActionState } from "../actions";
 
@@ -50,16 +51,18 @@ export default function Page() {
         </div>
         <AuthForm action={handleSubmit} defaultEmail={email}>
           <SubmitButton isSuccessful={isSuccessful}>Sign in</SubmitButton>
-          <p className="mt-4 text-center text-sm text-gray-600 dark:text-zinc-400">
-            {"Don't have an account? "}
-            <Link
-              href="/register"
-              className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
-            >
-              Sign up
-            </Link>
-            {" for free."}
-          </p>
+          {env.NEXT_PUBLIC_SIGNUP_ALLOWED && (
+            <p className="mt-4 text-center text-sm text-gray-600 dark:text-zinc-400">
+              {"Don't have an account? "}
+              <Link
+                href="/register"
+                className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
+              >
+                Sign up
+              </Link>
+              {" for free."}
+            </p>
+          )}
         </AuthForm>
       </div>
     </div>
