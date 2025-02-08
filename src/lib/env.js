@@ -19,6 +19,8 @@ export const env = createEnv({
 
     PORT: z.string().default("3000"),
 
+    OLLAMA_BASE_URL: z.string(),
+
     POSTGRES_USER: z.string(),
     POSTGRES_PASSWORD: z.string(),
     POSTGRES_DB: z.string(),
@@ -37,6 +39,7 @@ export const env = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
+    OLLAMA_BASE_URL: process.env.OLLAMA_BASE_URL,
     NEXT_PUBLIC_SIGNUP_ALLOWED: process.env.NEXT_PUBLIC_SIGNUP_ALLOWED,
     POSTGRES_USER: process.env.POSTGRES_USER,
     POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,

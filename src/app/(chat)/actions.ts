@@ -22,7 +22,10 @@ export async function generateTitleFromUserMessage({
 }: {
   message: CoreUserMessage;
 }) {
-  const model = await customModel("meta-llama/llama-3.2-3b-instruct");
+  let model = await customModel("meta-llama/llama-3.2-3b-instruct");
+  if (!model) {
+    model = await customModel("llama3.2:3b");
+  }
   invariant(model, "Missing API key");
 
   const { text: title } = await generateText({
